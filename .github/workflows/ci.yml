@@ -19,6 +19,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  webbpsf:
+    name: retrieve WEBBPSF data
+    runs-on: ubuntu-latest
+    env:
+      WEBBPSF_PATH: /tmp/webbpsf
+      WEBBPSF_SERVER_URL: https://stsci.box.com/shared/static/qxpiaxsjwo15ml6m4pkhtk36c9jgj70k.gz
+    outputs:
+      path: ${{ steps.path.outputs.path }}
+      server: ${{ steps.server.outputs.server }}
+      hash: ${{ steps.data.outputs.hash }}
+    steps:
+      - id: path
+        run: echo "path=${{ env.WEBBPSF_PATH }}" >> $GITHUB_OUTPUT
+      - id: server
+        run: echo "server=${{ env.WEBBPSF_SERVER_URL }}" >> $GITHUB_OUTPUT
+      - id: data
+        run: |
+          mkdir -p ${{ steps.path.outputs.path }}
+          wget ${{ steps.server.outputs.server }} -O ${{ steps.path.outputs.path }}/webbpsf-data.tar.gz
+          cd ${{ steps.path.outputs.path }}
+          tar --strip-components=1 -xzvf webbpsf-data.tar.gz
+          echo "hash=$( shasum webbpsf-data.tar.gz | awk '{ print $1 }' )" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.path.outputs.path }}
+          key: data-${{ steps.data.outputs.hash }}
   crds:
     name: retrieve current CRDS context
     runs-on: ubuntu-latest
@@ -53,15 +79,18 @@ jobs:
         - linux: build-dist
   test:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
-    needs: [ crds ]
+    needs: [ crds, webbpsf ]
     with:
       setenv: |
         CRDS_PATH: ${{ needs.crds.outputs.path }}
         CRDS_SERVER_URL: ${{ needs.crds.outputs.server }}
         CRDS_CLIENT_RETRY_COUNT: 3
         CRDS_CLIENT_RETRY_DELAY_SECONDS: 20
-      cache-path: ${{ needs.crds.outputs.path }}
-      cache-key: crds-${{ needs.crds.outputs.context }}
+        WEBBPSF_PATH: ${{ needs.webbpsf.outputs.path }}
+      cache-path: |
+        ${{ needs.crds.outputs.path }}
+        ${{ needs.webbpsf.outputs.path }}
+      cache-key: crds-${{ needs.crds.outputs.context }}-${{ needs.webbpsf.outputs.hash }}
       envs: |
         - linux: py39-oldestdeps-xdist-cov
           pytest-results-summary: true
