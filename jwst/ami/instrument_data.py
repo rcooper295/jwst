@@ -20,6 +20,7 @@ log.setLevel(logging.DEBUG)
 class NIRISS:
     def __init__(self, 
                  filt,
+                 nrm_model,
                  src="A0V",
                  chooseholes=None,
                  affine2d=None,
@@ -76,6 +77,7 @@ class NIRISS:
         self.filt = filt
         self.throughput = bandpass
         self.firstfew = firstfew
+        self.nrm_model = nrm_model
 
         self.lam_c, self.lam_w = utils.get_cw_beta(self.throughput)
         self.wls = [self.throughput, ]
@@ -261,7 +263,8 @@ class NIRISS:
             scidata_ctrd, bpdata_ctrd = bp_fix.fix_bad_pixels(scidata_ctrd,
                                                             bpdata_ctrd,
                                                             input_model.meta.instrument.filter,
-                                                            self.pscale_mas)
+                                                            self.pscale_mas,
+                                                            self.nrm_model)
         else:
             log.info('Not running Fourier bad pixel fix')
 
