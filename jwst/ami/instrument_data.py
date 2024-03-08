@@ -21,7 +21,6 @@ class NIRISS:
     def __init__(self,
                  filt,
                  nrm_model,
-                 src="A0V",
                  chooseholes=None,
                  affine2d=None,
                  bandpass=None,
@@ -41,9 +40,6 @@ class NIRISS:
         ----------
         filt: string
             filter name
-
-        src: string
-            spectral type
 
         chooseholes: list
             None, or e.g. ['B2', 'B4', 'B5', 'B6'] for a four-hole mask
@@ -78,7 +74,6 @@ class NIRISS:
         self.throughput = bandpass
         self.firstfew = firstfew
         self.nrm_model = nrm_model
-        self.src = src
 
         self.lam_c, self.lam_w = utils.get_cw_beta(self.throughput)
         self.wls = [
@@ -210,7 +205,6 @@ class NIRISS:
         self.pmdec = input_model.meta.target.proper_motion_dec
         self.ra_uncertainty = input_model.meta.target.ra_uncertainty
         self.dec_uncertainty = input_model.meta.target.dec_uncertainty
-        self.spectyp = self.src
 
 
         datestr = input_model.meta.visit.start_time.replace(" ", "T")
