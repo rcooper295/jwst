@@ -26,8 +26,6 @@ class FringeFitter:
         weighted=False,
     ):
         """
-        Short Summary
-        -------------
         For the given information on the instrument and mask, calculate the
         fringe observables (visibilities and closure phases in the image plane.
 
@@ -66,8 +64,6 @@ class FringeFitter:
 
     def fit_fringes_all(self, input_model):
         """
-        Short Summary
-        ------------
         Extract the input data from input_model, and generate the best model to
         match the data (centering, scaling, rotation)
         May allow parallelization by integration (later)
@@ -96,7 +92,6 @@ class FringeFitter:
         for slc in range(self.instrument_data.nwav):
             self.nrm_list.append(self.fit_fringes_single_integration(slc))
 
-
         # Now save final output model(s) of all slices, averaged slices to AmiOiModels
         # averaged
         oifits_model = oifits.RawOifits(self)
@@ -113,8 +108,6 @@ class FringeFitter:
         
     def make_lgfitmodel(self):
         """
-        Short Summary
-        ------------
         Populate the LGFitModel with the output of the fringe fitting
         (LG algorithm)
 
@@ -162,8 +155,6 @@ class FringeFitter:
 
     def fit_fringes_single_integration(self, slc):
         """
-        Short Summary
-        ------------
         Generate the best model to
         match a single slice
 
@@ -237,4 +228,5 @@ class FringeFitter:
         nrm.create_modelpsf()
         # model now stored as nrm.modelpsf, also nrm.residual
         self.nrm = nrm # this gets updated with each slice
+
         return nrm # to fit_fringes_all, where the output model will be created from list of nrm objects

@@ -19,11 +19,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "asdf>=2.15.1,<4",
+    "asdf>=3.1.0,<4",
     "astropy>=5.3",
     "BayesicFitting>=3.0.1",
     "crds>=11.17.14",
-    "drizzle>=1.14.3,<1.15.0",
+    "drizzle>=1.15.0",
     "gwcs>=0.21.0,<0.22.0",
     "numpy>=1.22",
     "opencv-python-headless>=4.6.0.66",
@@ -134,7 +134,7 @@ test = [
     "colorama>=0.4.1",
     "readchar>=3.0",
     "ruff",
-    "pytest>=6.0.0,<8.1.0",
+    "pytest>=6.0.0",
     "pytest-cov>=2.9.0",
     "pytest-doctestplus>=0.10.0",
     "requests_mock>=1.0",
@@ -233,7 +233,10 @@ results_root = "jwst-pipeline-results"
 text_file_format = "rst"
 doctest_plus = "enabled"
 doctest_rst = "enabled"
-addopts = "--show-capture=no --report-crds-context"
+addopts = ["-p no:legacypath",
+    "--show-capture=no",
+    "--report-crds-context",
+]
 filterwarnings = [
     "error::ResourceWarning",
     "ignore:Models in math_functions:astropy.utils.exceptions.AstropyUserWarning",
