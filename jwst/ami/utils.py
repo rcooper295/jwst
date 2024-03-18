@@ -1290,6 +1290,7 @@ def get_cw_beta(bandpass):
     --------
     bandpass: array
         Weighted mean wavelength in meters, fractional bandpass
+
     """
     wt = bandpass[:, 0]
     wl = bandpass[:, 1]
@@ -1377,6 +1378,7 @@ def _cdmatrix_to_sky(vec, cd11, cd12, cd21, cd22):
     Use the global header values explicitly, for clarity.
     CD inputs are 4 scalars, conceptually 2x2 array in units degrees/pixel
     
+
     """
     return np.array((cd11 * vec[0] + cd12 * vec[1], cd21 * vec[0] + cd22 * vec[1]))
 

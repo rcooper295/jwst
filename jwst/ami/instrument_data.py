@@ -317,6 +317,8 @@ class NIRISS:
 
     def reset_nwav(self, nwav):
         """
+        Short Summary
+        -------------
         Reset self.nwav
 
         Parameters

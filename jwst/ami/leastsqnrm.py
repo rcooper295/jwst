@@ -414,7 +414,7 @@ def model_array(
         return None
 
 
-def weighted_operations(img, model, dqm=None):
+def weighted_operations(img, model, dqm):
     """
     Performs least squares matrix operations to solve A x = b, where A is the
     model, b is the data (image), and x is the coefficient vector we are solving
@@ -458,10 +458,7 @@ def weighted_operations(img, model, dqm=None):
     flatimg = img.reshape(np.shape(img)[0] * np.shape(img)[1])
     flatdqm = dqm.reshape(np.shape(img)[0] * np.shape(img)[1])
 
-    if dqm is not None:
-        nanlist = np.where(flatdqm)  # where DO_NOT_USE up.
-    else:
-        nanlist = (np.array(()),)  # shouldn't occur w/MAST JWST data
+    nanlist = np.where(flatdqm)  # where DO_NOT_USE up.
 
     # see original linearfit https://github.com/agreenbaum/ImPlaneIA:
     # agreenbaum committed on May 21, 2017 1 parent 3e0fb8b
@@ -490,7 +487,8 @@ def weighted_operations(img, model, dqm=None):
     Aw = flatmodel * weights[:, np.newaxis]
     bw = flatimg * weights
     # resids are pixel value residuals, flattened to 1d vector
-    x, rss, rank, singvals = np.linalg.lstsq(Aw, bw)
+    
+    x, rss, rank, singvals = np.linalg.lstsq(Aw, bw, rcond=None)
 
     # actual residuals in image:
     res = flatimg - np.dot(flatmodel, x)
