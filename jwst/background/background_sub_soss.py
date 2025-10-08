@@ -154,8 +154,11 @@ def subtract_soss_bkg(
 
     # Generate exclusion mask from data array flux threshold, then OR in the DNU dq plane.
     data_mask = input_model.data >= np.nanpercentile(input_model.data, soss_source_percentile)
-    data_mask |= input_model.dq & 1 > 0
-
+    try:
+        data_mask |= input_model.dq & 1 > 0
+    except AttributeError:
+        # if ramp fit step not run yet, it has PIXELDQ and GROUPDQ arrays
+        data_mask |= input_model.pixeldq & 1 > 0
     # Most SOSS data will be multi-integration - but if input data array is 2-D, cast into
     # 3-D array for ease of computation
     if len(input_model.data.shape) < 3:
