@@ -9,8 +9,10 @@ from jwst import datamodels
 from jwst.assign_wcs import AssignWcsStep, nirspec
 from jwst.assign_wcs.util import MSAFileError, NoDataOnDetectorError
 from jwst.clean_flicker_noise.background_level import background_level, clip_to_background
+
+# from jwst.clean_flicker_noise.tso_median_image import make_median_image
+from jwst.clean_flicker_noise.custom_background_cleanflickernoise import make_median_image
 from jwst.clean_flicker_noise.nsclean import NSClean, NSCleanSubarray
-from jwst.clean_flicker_noise.tso_median_image import make_median_image
 from jwst.extract_1d.soss_extract import pastasoss
 from jwst.flatfield import FlatFieldStep
 from jwst.lib.basic_utils import disable_logging
@@ -1418,7 +1420,17 @@ def do_correction(
             log.warning("The step will be skipped.")
             return input_model, None, None, None, status
         try:
-            median_image = make_median_image(input_model, image_model, soss_refmodel=soss_refmodel)
+            # hardcode the soss background file we want to use for now
+            backgroundratefile = (
+                "/ifs/jwst/with/niriss/rcooper/SOSS/12564/multistrip_tso_background_SUBSTRIP256.npy"
+            )
+
+            median_image = make_median_image(
+                input_model,
+                image_model,
+                soss_refmodel=soss_refmodel,
+                backgroundratefile=backgroundratefile,
+            )
         except ValueError as err:
             log.warning("A median image could not be created.")
             log.warning(f"The error was: {err}")
