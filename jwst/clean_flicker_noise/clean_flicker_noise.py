@@ -1422,7 +1422,7 @@ def do_correction(
         try:
             # hardcode the soss background file we want to use for now
             backgroundratefile = (
-                "/ifs/jwst/with/niriss/rcooper/SOSS/12564/multistrip_tso_background_SUBSTRIP256.npy"
+                "/ifs/jwst/wit/niriss/rcooper/SOSS/12564/multistrip_tso_background_SUBSTRIP256.npy"
             )
 
             median_image = make_median_image(
